@@ -1,0 +1,9 @@
+# ignore everything
+*
+
+# ...except the .gitignore itself
+!.gitignore
+
+# ...and actual C++ source files
+!/*.cpp
+!/*.hpp

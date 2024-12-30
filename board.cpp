@@ -5,9 +5,9 @@ namespace {
         return __builtin_popcountll(bitboard);
     }
 
-    int getColumnHeight(const board::State &state, const int column) {
+    int getColumnHeight(const board::Position &position, const int column) {
         const uint64_t columnMask = board::FIRST_COLUMN_MASK << column * board::RIGHT_OFFSET;
-        return popcount((state.p1Bitboard | state.p2Bitboard) & columnMask);
+        return popcount((position.p1Bitboard | position.p2Bitboard) & columnMask);
     }
 
     bool hasFourInARow(const uint64_t &bitboard, const int shift) {
@@ -17,26 +17,26 @@ namespace {
 }
 
 namespace board {
-    bool isPlayer1Turn(const State &state) {
-        return popcount(state.p1Bitboard) == popcount(state.p2Bitboard);
+    bool isPlayer1Turn(const Position &position) {
+        return popcount(position.p1Bitboard) == popcount(position.p2Bitboard);
     }
 
-    bool isColumnPlayable(const State &state, const int column) {
-        return getColumnHeight(state, column) < NUM_ROWS;
+    bool isColumnPlayable(const Position &position, const int column) {
+        return getColumnHeight(position, column) < NUM_ROWS;
     }
 
-    void makeMove(State &state, const int column) {
-        const uint64_t moveBit = 1ULL << column * RIGHT_OFFSET + getColumnHeight(state, column);
+    void makeMove(Position &position, const int column) {
+        const uint64_t moveBit = 1ULL << column * RIGHT_OFFSET + getColumnHeight(position, column);
 
-        if (isPlayer1Turn(state)) {
-            state.p1Bitboard |= moveBit;
+        if (isPlayer1Turn(position)) {
+            position.p1Bitboard |= moveBit;
         } else {
-            state.p2Bitboard |= moveBit;
+            position.p2Bitboard |= moveBit;
         }
     }
 
-    bool hasWinner(const State &state) {
-        const uint64_t lastPlayedBitboard = isPlayer1Turn(state) ? state.p2Bitboard : state.p1Bitboard;
+    bool hasWinner(const Position &position) {
+        const uint64_t lastPlayedBitboard = isPlayer1Turn(position) ? position.p2Bitboard : position.p1Bitboard;
 
         return hasFourInARow(lastPlayedBitboard, RIGHT_OFFSET + UP_OFFSET) ||
                hasFourInARow(lastPlayedBitboard, RIGHT_OFFSET - UP_OFFSET) ||
@@ -44,7 +44,7 @@ namespace board {
                hasFourInARow(lastPlayedBitboard, UP_OFFSET);
     }
 
-    bool isBoardFull(const State &state) {
-        return popcount(state.p1Bitboard | state.p2Bitboard) == NUM_ROWS * NUM_COLS;
+    bool isBoardFull(const Position &position) {
+        return popcount(position.p1Bitboard | position.p2Bitboard) == NUM_ROWS * NUM_COLS;
     }
 }

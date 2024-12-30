@@ -25,7 +25,7 @@ namespace board {
         return getColumnHeight(position, column) < NUM_ROWS;
     }
 
-    void makeMove(Position &position, const int column) {
+    void applyMove(Position &position, const int column) {
         const uint64_t moveBit = 1ULL << column * RIGHT_OFFSET + getColumnHeight(position, column);
 
         if (isPlayer1Turn(position)) {

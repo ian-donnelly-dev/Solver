@@ -16,7 +16,7 @@ namespace board {
 
     bool isPlayer1Turn(const Position& position);
     bool isColumnPlayable(const Position& position, int column);
-    void makeMove(Position& position, int column);
+    void applyMove(Position& position, int column);
     bool hasWinner(const Position& position);
     bool isBoardFull(const Position& position);
 }

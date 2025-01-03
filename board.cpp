@@ -5,27 +5,27 @@ namespace {
         return __builtin_popcountll(bitboard);
     }
 
-    int getColumnHeight(const board::Position &position, const int column) {
+    int getColumnHeight(const board::Position& position, const int column) {
         const uint64_t columnMask = board::FIRST_COLUMN_MASK << column * board::RIGHT_OFFSET;
         return popcount((position.p1Bitboard | position.p2Bitboard) & columnMask);
     }
 
-    bool hasFourInARow(const uint64_t &bitboard, const int shift) {
+    bool hasFourInARow(const uint64_t& bitboard, const int shift) {
         const uint64_t consecutive = bitboard & bitboard >> shift;
         return (consecutive & consecutive >> 2 * shift) != 0;
     }
 }
 
 namespace board {
-    bool isPlayer1Turn(const Position &position) {
+    bool isPlayer1Turn(const Position& position) {
         return popcount(position.p1Bitboard) == popcount(position.p2Bitboard);
     }
 
-    bool isColumnPlayable(const Position &position, const int column) {
+    bool isColumnPlayable(const Position& position, const int column) {
         return getColumnHeight(position, column) < NUM_ROWS;
     }
 
-    void applyMove(Position &position, const int column) {
+    void applyMove(Position& position, const int column) {
         const uint64_t moveBit = 1ULL << column * RIGHT_OFFSET + getColumnHeight(position, column);
 
         if (isPlayer1Turn(position)) {
@@ -35,7 +35,7 @@ namespace board {
         }
     }
 
-    bool hasWinner(const Position &position) {
+    bool hasWinner(const Position& position) {
         const uint64_t lastPlayedBitboard = isPlayer1Turn(position) ? position.p2Bitboard : position.p1Bitboard;
 
         return hasFourInARow(lastPlayedBitboard, RIGHT_OFFSET + UP_OFFSET) ||
@@ -44,7 +44,7 @@ namespace board {
                hasFourInARow(lastPlayedBitboard, UP_OFFSET);
     }
 
-    bool isBoardFull(const Position &position) {
+    bool isBoardFull(const Position& position) {
         return popcount(position.p1Bitboard | position.p2Bitboard) == NUM_ROWS * NUM_COLS;
     }
 }
